@@ -1,0 +1,120 @@
+@desktop: ~"only screen and (min-width: 1000px)";
+@tablet: ~"only screen and (max-width: 999px)";
+@mobile: ~"only screen and (max-width: 500px)";
+
+.login__container {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-size: 100% 100%;
+  background-position: 50%;
+  @media @desktop {
+    background-image: url("https://backgroundcheckall.com/wp-content/uploads/2018/10/logo-background-shapes-png-5.png");
+  }
+  @media @tablet {
+    background-image: url("https://backgroundcheckall.com/wp-content/uploads/2018/10/logo-background-shapes-png-5.png");
+  }
+}
+
+.form__container {
+  color: #555;
+  width: 400px;
+  min-height: 50%;
+  // transition: height 400ms;/
+  padding: 30px;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 10px;
+  //   box-shadow: 0 0 5px #0e3f99;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  box-sizing: border-box;
+
+  @media @mobile {
+    width: 100%;
+  }
+  &-title {
+    font-size: 25px;
+    display: block;
+    line-height: 1.2;
+    text-align: center;
+  }
+  &-content {
+    padding: 20px 0;
+    input {
+      background-color: #f7f7f7;
+      background: #fff;
+      &:selected {
+        background-color: #f7f7f7;
+        background: #fff;
+      }
+    }
+    &:selected {
+      background-color: #f7f7f7;
+      background: #fff;
+    }
+  }
+
+  .content-email,
+  .content-password {
+    font-size: 15px;
+    font-weight: 500px;
+    position: relative;
+    background: rgba(255, 255, 255, 0.9);
+    top: 10px;
+    left: 10px;
+    z-index: 999;
+    padding: 10px;
+  }
+
+  .content-sign-in-btn {
+    margin: 20px 0;
+    border: none;
+    outline: none;
+    background: #f2f2f2;
+  }
+
+  .content-sign-up {
+    display: block;
+    padding: 20px 0 0 0;
+    text-align: center;
+    color: #8f8484;
+
+    span:nth-child(2) {
+      cursor: pointer;
+      margin-left: 4px;
+      padding-bottom: 2px;
+      border-bottom: 1px solid #f2f2f2;
+      // transition: all ease-in 1s;
+
+      &:hover {
+        color: #1b1c1d;
+        border-bottom: 1px solid #1b1c1d;
+      }
+    }
+  }
+}
+
+// .sign-up-active {
+//   min-height: 70%;
+// }
+
+// .sign-with-msg {
+//   min-height: 75%;
+// }
+
+// .sign-in-with-error {
+//   min-height: 55%;
+// }
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  box-shadow: 0 0 0 30px white inset !important;
+  // background-color: #fff !important;
+}
+.ui.input.error > input {
+  background: #fff;
+}
