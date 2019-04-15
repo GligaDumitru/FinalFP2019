@@ -16,7 +16,6 @@ export default class AuthService {
             //register this account in database
             const { user } = rsp;
             let userId = user.uid;
-            console.log(userId);
             this.createNewAccount({
               userId,
               firstName,
@@ -24,7 +23,6 @@ export default class AuthService {
               signUpEmail
             }).then(() => {
               const message = "Your account it was successfully registered";
-              console.log(message);
               resolve({ message: message });
             });
           },
@@ -82,7 +80,6 @@ export default class AuthService {
         if (firebaseUser != null) {
           this.getUserInfo(firebaseUser.uid)
             .then(rsp => {
-              console.log("a", rsp);
               localStorage.setItem("userId", firebaseUser.uid);
               localStorage.setItem("firstName", rsp.val().firstName);
               localStorage.setItem("lastName", rsp.val().lastName);

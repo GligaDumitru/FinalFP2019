@@ -156,8 +156,44 @@ export const setNewEvent = (event, userId) => {
     .set(event);
 };
 
+export const addNewCommentToFirebase = (ev, comment) => {
+  let comments = [];
+  let participants = [];
+
+  const {
+    date,
+    description,
+    location,
+    organizer,
+    title,
+    userId,
+    category,
+    eventId
+  } = ev;
+  if (ev.comments) comments = [...ev.comments];
+  if (ev.participants) participants = [...ev.participants];
+  comments.push(comment);
+  const data = {
+    date,
+    description,
+    location,
+    comments,
+    organizer,
+    title,
+    userId,
+    category,
+    participants
+  };
+  return firebaseProvider
+    .database()
+    .ref("events")
+    .child(eventId)
+    .update({ ...data });
+};
+
 export const addNewParticipant = (eventIndex, userIdFromData) => {
   let participants = [];
+  let comments = [];
   const {
     date,
     description,
@@ -168,12 +204,14 @@ export const addNewParticipant = (eventIndex, userIdFromData) => {
     category,
     eventId
   } = eventIndex;
+  if (eventIndex.comments) comments = [...eventIndex.comments];
   if (eventIndex.participants) participants = [...eventIndex.participants];
   participants.push(userIdFromData);
   const data = {
     date,
     description,
     location,
+    comments,
     organizer,
     title,
     userId,
@@ -190,6 +228,12 @@ export const addNewParticipant = (eventIndex, userIdFromData) => {
 export const joinEvent = (eventIndex, userIdFromData) => {
   return dispatch => {
     addNewParticipant(eventIndex, userIdFromData);
+  };
+};
+
+export const addNewComment = (eventId, comment) => {
+  return dispatch => {
+    addNewCommentToFirebase(eventId, comment);
   };
 };
 
@@ -236,17 +280,20 @@ export const fetchEventListFirebase = () => {
      *fetch scheduled events from firebase
      */
   };
-  return firebaseProvider
-    .database()
-    .ref("events")
-    .once("value", snapshot => {
-      if (snapshot.val() !== null) {
-        payload["eventList"] = snapshotToArray(snapshot);
-      }
-    })
-    .then(() => {
-      return payload;
-    });
+  return (
+    firebaseProvider
+      .database()
+      .ref("events")
+      // .orderByChild('date')
+      .once("value", snapshot => {
+        if (snapshot.val() !== null) {
+          payload["eventList"] = snapshotToArray(snapshot);
+        }
+      })
+      .then(() => {
+        return payload;
+      })
+  );
 };
 
 export const snapshotToArray = (snapshot, user = false) => {

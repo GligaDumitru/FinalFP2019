@@ -21,10 +21,8 @@ class Login extends Component {
   componentDidMount() {
     this.authService.checkIfLoggedIn().then(rsp => {
       if (rsp) {
-        console.log("is logged in:", rsp);
         this.props.history.push("/home");
       } else {
-        console.log("IS NOT LOGGED IN");
         this.props.onCompleteSign({
           checkIfIsAuthenticated: false
         });
@@ -94,7 +92,6 @@ class Login extends Component {
   onSignInUserCallback = (email, password) => {
     this.authService.onSignInUser(email, password).then(
       rsp => {
-        console.log(rsp);
         this.props.onCompleteSign({
           showSpinner: false,
           signInErrorMsg: false,
@@ -112,12 +109,10 @@ class Login extends Component {
     );
   };
   onSignUpUserCallback = (firstName, lastName, signUpEmail, signUpPassword) => {
-    console.log(firstName, lastName, signUpEmail, signUpPassword);
     this.authService
       .onSignUpUser(firstName, lastName, signUpEmail, signUpPassword)
       .then(
         rsp => {
-          console.log(rsp);
           this.props.onCompleteSign({
             showSpinner: false,
             signUpSuccessMsg: true,
@@ -254,7 +249,6 @@ class Login extends Component {
       errorEmailFormat,
       errorMsg,
       showSpinner,
-      signUpFormVisble,
       fieldErrors,
       successMsg
     } = this.props;

@@ -1,10 +1,6 @@
-import EventParticipants from "./eventParticipants";
 import React, { Component } from "react";
 
 export default class EvetItem extends Component {
-  constructor(props) {
-    super(props);
-  }
   onClickParticipantsList = () => {
     this.props.toggleParticipants(
       this.props.participants,
@@ -12,25 +8,22 @@ export default class EvetItem extends Component {
       this.props.event
     );
   };
+  onClickShowComments = () => {
+    this.props.toggleComments(
+      this.props.participants,
+      this.props.comments || {},
+      this.props.event
+    );
+  };
 
   render() {
-    const {
-      event,
-      onClick,
-      joined,
-      item,
-      showParticipants,
-      id,
-      toggleParticipants,
-      participants
-    } = this.props;
+    const { event, onClick, joined, id } = this.props;
 
     return (
       <div
         className={`event_item-container ${this.props.className}`}
         onClick={this.props.onClickEvent}
       >
-        {console.log("id:", id, ":", participants)}
         <div className="event_item-date-container">
           <div className="event_item-date-day">{event.date.day}</div>
           <div className="event_item-date-month">{event.date.month}</div>
@@ -82,6 +75,14 @@ export default class EvetItem extends Component {
             onClick={this.onClickParticipantsList}
           >
             Participants
+          </button>
+          <button
+            className="ui icon button"
+            title="add comment"
+            data-content="Add users to your feed"
+            onClick={this.onClickShowComments}
+          >
+            <i class="comment icon" /> Add Comment
           </button>
         </div>
       </div>

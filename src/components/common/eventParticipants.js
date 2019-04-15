@@ -1,11 +1,8 @@
 import React, { Fragment } from "react";
-import { Button, Header, Image, Modal } from "semantic-ui-react";
+import { Image, Modal } from "semantic-ui-react";
 import UserList from "./userList";
 
 export default function EventParticipants(props) {
-  if (props.currentEvent !== "") {
-    console.log("ce am primit:", props.currentEvent);
-  }
   return (
     <Fragment>
       {props ? (

@@ -18,9 +18,10 @@ import {
   resetFormState,
   getEventList,
   joinEvent,
-  getUserList
+  getUserList,
+  addNewComment
 } from "../../actions/homeActions";
-import { timingSafeEqual } from "crypto";
+import Comments from "../common/comments";
 
 class Home extends Component {
   constructor(props) {
@@ -34,7 +35,10 @@ class Home extends Component {
       activeIndex: -1,
       showParticipants: false,
       participants: [],
-      eventsCount: []
+      eventsCount: [],
+      showComments: false,
+      currentEvent: {},
+      commentToBeAdded: ""
     };
   }
 
@@ -42,6 +46,14 @@ class Home extends Component {
     this.setState({
       showParticipants: !this.state.showParticipants,
       participants,
+      currentEvent: ev
+    });
+  };
+
+  toggleComments = (event, comments = [], ev = {}) => {
+    this.setState({
+      showComments: !this.state.showComments,
+      comments,
       currentEvent: ev
     });
   };
@@ -72,6 +84,12 @@ class Home extends Component {
       .on("value", () => {
         this.props.onGetEventList();
       });
+  };
+
+  onHandleChangeComment = ({ target }) => {
+    this.setState({
+      commentToBeAdded: target.value
+    });
   };
 
   initializeUsersList = () => {
@@ -188,6 +206,35 @@ class Home extends Component {
     this.onClickBackToEventList();
   };
 
+  getEventById = id => {
+    let result = {};
+    this.props.home.eventList.map(item => {
+      if (item.eventId === id) {
+        result = item;
+      }
+    });
+    return result;
+  };
+  onAddComment = e => {
+    let comment = {
+      text: this.state.commentToBeAdded,
+      date: moment().format("LLLL") || "",
+      user: localStorage.getItem("userId")
+    };
+    let comments = this.state.currentEvent.comments
+      ? [...this.state.currentEvent.comments]
+      : [];
+    comments.push(comment);
+    this.setState({
+      commentToBeAdded: "",
+      currentEvent: {
+        ...this.state.currentEvent,
+        comments
+      }
+    });
+    this.props.addNewComment(this.getEventById(e.target.id), comment);
+  };
+
   onClickEvent = (event, index) => {
     const { location } = event;
     this.setState({
@@ -212,7 +259,7 @@ class Home extends Component {
     const { participants } = event;
     if (participants) {
       participants.map((participant, index) => {
-        if (participant == localStorage.getItem("userId")) {
+        if (participant === localStorage.getItem("userId")) {
           result = true;
         }
       });
@@ -226,48 +273,48 @@ class Home extends Component {
     });
   };
 
-  getDetailsFromUser = (userIdReceived, detail = false) => {
+  getDetailsFromUser = (userIdReceived, justFullName = false) => {
     let result = "";
     let userList = this.props.home.userList;
-    userList.map((user, index) => {
+    userList.map(user => {
       if (user.userId === userIdReceived) {
-        result = `${user.firstName} ${user.lastName} | ${user.email}`;
+        result = !justFullName
+          ? `${user.firstName.toUpperCase()} ${user.lastName.toUpperCase()} | ${
+              user.email
+            }`
+          : `${user.firstName.toUpperCase()} ${user.lastName.toUpperCase()}`;
       }
     });
     return result;
   };
   toggleShowClass = ({ target }) => {
-    if (target.className == "user__container-events") {
+    if (target.className === "user__container-events") {
       target.className = "user__container-events show";
-    } else if (target.className == "user__container-events show") {
+    } else if (target.className === "user__container-events show") {
       target.className = "user__container-events";
     }
   };
 
   toogleMainOptions = ({ target }) => {
-    console.log(target.className);
     let first = document.getElementById("eventsCreatedByUsers").classList;
     let second = document.getElementById("eventUsersParticipate").classList;
-    console.log(first, second);
 
-    if (target.className == "main-title first") {
+    if (target.className === "main-title first") {
       first.contains("hide") ? first.remove("hide") : first.add("hide");
     }
-    if (target.className == "main-title second") {
+    if (target.className === "main-title second") {
       second.contains("hide") ? second.remove("hide") : second.add("hide");
     }
-
-    //   target.className = "main-title show";
-    // } else if (target.className == "main-title show") {
-    //   target.className = "main-title";
   };
+
   checkIfUserIsGoingToEvent = (ev, userId) => {
     let result = false;
-    ev.map((item, index) => {
-      if (item === userId) {
-        result = true;
-      }
-    });
+    ev &&
+      ev.map((item, index) => {
+        if (item === userId) {
+          result = true;
+        }
+      });
     return result;
   };
 
@@ -365,6 +412,7 @@ class Home extends Component {
                                         this.onClickJoinEvent(index.target.id)
                                       }
                                       joined={this.checkIfYouJoinedEvent(item)}
+                                      toggleComments={this.toggleComments}
                                     />
                                   );
                                 }
@@ -439,6 +487,7 @@ class Home extends Component {
                                         this.onClickJoinEvent(index.target.id)
                                       }
                                       joined={this.checkIfYouJoinedEvent(item)}
+                                      toggleComments={this.toggleComments}
                                     />
                                   );
                                 }
@@ -614,6 +663,16 @@ class Home extends Component {
             currentEvent={this.state.currentEvent || ""}
             getDetailsFromUser={this.getDetailsFromUser}
           />
+          <Comments
+            showComments={this.state.showComments}
+            toggleComments={this.toggleComments}
+            eventDetails={this.state.currentEvent}
+            comments={this.state.currentEvent.comments || []}
+            commentValue={this.state.commentToBeAdded || ""}
+            handleChangeComment={this.onHandleChangeComment}
+            onAddComment={this.onAddComment}
+            getDetailsFromUser={this.getDetailsFromUser}
+          />
         </div>
       </div>
     );
@@ -659,6 +718,9 @@ const mapDispatchToProps = dispatch => ({
   },
   onJoinEvent: (eventIndex, userID) => {
     dispatch(joinEvent(eventIndex, userID));
+  },
+  addNewComment: (eventId, comment) => {
+    dispatch(addNewComment(eventId, comment));
   }
 });
 

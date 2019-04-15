@@ -322,6 +322,16 @@ body {
 .main-content {
   height: calc(100% - 110px);
 }
+.eventComment {
+  color: hsl(24, 88%, 53%);
+}
+.description {
+  width: 100% !important;
+}
+.dateComment {
+  color: grey;
+  font-size: 10px !important;
+}
 .home__container {
   height: 100%;
   background-color: #ffffff;
@@ -592,6 +602,15 @@ body {
 .home__container-dashboard .event_item-action-container {
   align-self: center;
   padding-right: 10px;
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+}
+.home__container-dashboard .event_item-action-container .ui.button {
+  margin: 10px 0;
+}
+.home__container-dashboard .event_item-action-container .ui.button:first-child {
+  margin-top: 0;
 }
 .home__container-dashboard .event_item-action-container .ui.button:hover {
   color: #ffffff !important;
